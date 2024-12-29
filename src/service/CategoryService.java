@@ -1,7 +1,5 @@
 package service;
 
-import dao.CategoryDAO;
-import dao.CsvDAO;
 import dao.ICategoryDAO;
 import entity.Category;
 import java.util.List;
@@ -22,7 +20,7 @@ public class CategoryService {
     }
 
     public void createCategory(Category category) {
-        if (categoryDao.existsByTitle(category.getTitle())) {
+        if (categoryDao.existsByTitle(category.getName())) {
             System.out.println("bu title zaten mevcut");
             return;
         }
@@ -32,4 +30,9 @@ public class CategoryService {
     public void updateCategory(long id, Category category) {
         categoryDao.updateCategory(id, category);
     }
+
+    public boolean existById(long id) {
+        return categoryDao.existsById(id);
+    }
+
 }

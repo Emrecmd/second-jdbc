@@ -14,7 +14,6 @@ public class DBConnection {
         try {
             Class.forName("org.postgresql.Driver");
             c = DriverManager.getConnection(url, username, password);
-            System.out.println("işlem başarıyla tamamlandı");
         } catch (Exception e) {
             System.out.println(e);
         }

@@ -27,6 +27,11 @@ public class CsvDAO implements ICategoryDAO{
     }
 
     @Override
+    public boolean existsById(long id) {
+        return false;
+    }
+
+    @Override
     public void updateCategory(long id, Category category) {
 
     }

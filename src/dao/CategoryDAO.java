@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class CategoryDAO implements ICategoryDAO {
     public void createCategory(Category c) {
         try {
             Statement st = this.getConnection().createStatement();
-            String query = "insert into category (title , created) values ('" + c.getTitle() + "', '" + c.getCreated() + "')";
+            String query = "insert into category (name , created_at) values ('" + c.getName() + "', '" + c.getCreatedAt() + "')";
             st.executeUpdate(query);
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,8 +35,7 @@ public class CategoryDAO implements ICategoryDAO {
 
     public void updateCategory(long id, Category category) {
         String query = "UPDATE category SET " +
-                " title = \'" + category.getTitle() + "\'," +
-                " updated = \'" + LocalDateTime.now() + "\'" +
+                " name = \'" + category.getName() + "\'" +
                 " WHERE ID = " + id;
 
         try (Statement statement = getConnection().createStatement()) {
@@ -58,8 +56,8 @@ public class CategoryDAO implements ICategoryDAO {
         }
     }
 
-    public boolean existsByTitle(String title) {
-        String query = "SELECT COUNT(*) FROM category WHERE LOWER(title) = LOWER(\'" + title + "\')";
+    public boolean existsByTitle(String name) {
+        String query = "SELECT COUNT(*) FROM category WHERE LOWER(name) = LOWER(\'" + name + "\')";
         try {
             Statement statement = this.getConnection().createStatement();
             System.out.println(query);
@@ -75,6 +73,22 @@ public class CategoryDAO implements ICategoryDAO {
         }
     }
 
+    public boolean existsById(long id) {
+        String query = "SELECT COUNT(*) FROM category WHERE id = " + id;
+
+        try {
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            int count = 0;
+            if(resultSet.next()) {
+                count = resultSet.getInt("count");
+            }
+            return (count > 0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Category> getCategoryList() {
         List<Category> categoryList = new ArrayList<>();
         try {
@@ -85,9 +99,7 @@ public class CategoryDAO implements ICategoryDAO {
             while (rs.next()) {
                 Category category = new Category();
                 category.setId(rs.getLong("id"));
-                category.setTitle(rs.getString("title"));
-                //category.setCreated(rs.getTimestamp("created"));
-                category.setUpdated(rs.getTimestamp("updated"));
+                category.setName(rs.getString("name"));
                 categoryList.add(category);
             }
         } catch (Exception e) {

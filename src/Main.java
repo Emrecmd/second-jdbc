@@ -1,7 +1,10 @@
 import dao.CategoryDAO;
+import entity.Product;
 import service.CategoryService;
 import entity.Category;
+import service.ProductService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -9,9 +12,10 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         CategoryService categoryService = new CategoryService(new CategoryDAO());
+        ProductService productService = new ProductService();
 
         while (true) {
-            int islem = getInteger("db'ye veri eklemek için 1, veri listelemek için 2, veri silmek için 3, çıkış için 4: ");
+            int islem = getInteger("db'ye veri eklemek için 1, veri listelemek için 2, veri silmek için 3, çıkış için 4, güncellemek için 5, bir ürün eklemek için 6 : ");
             List<Category> categoryList;
             switch (islem) {
                 case 1:
@@ -43,6 +47,17 @@ public class Main {
                     categoryList = categoryService.listCategory();
                     printCategoryList(categoryList);
                     break;
+                case 6:
+                    Product product = new Product();
+                    final String productName = getString("ürünün adını giriniz: ");
+                    product.setName(productName);
+                    product.setCreatedAt(LocalDateTime.now());
+                    categoryList = categoryService.listCategory();
+                    printCategoryList(categoryList);
+                    final int productCategoryId = getInteger("ürünü hangi kategoriye eklemek istediğinizi giriniz: ");
+                    product.setCategoryId(productCategoryId);
+                    productService.createProduct(product);
+                    break;
                 default:
                     System.out.println("hatalı işlem.");
                     break;
@@ -56,7 +71,7 @@ public class Main {
     private static void updateCategory(CategoryService categoryService) {
         int id = getInteger("güncellemek istediğiniz id yi girin: ");
         Category category = new Category();
-        category.setTitle(getString("güncellemek istediğini titleı girin: "));
+        category.setName(getString("güncellemek istediğini titleı girin: "));
         categoryService.updateCategory(id, category);
     }
 
@@ -75,7 +90,7 @@ public class Main {
 
     public static void printCategoryList(List<Category> categoryList) {
         for (Category category : categoryList) {
-            System.out.println(category.getId() + category.getTitle());
+            System.out.println(category.getId() + category.getName());
         }
     }
 }
